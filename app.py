@@ -23,9 +23,9 @@ MONGODB = {
 client = pymongo.MongoClient(MONGODB['URL'])
 collection=client[MONGODB['DATABASE']][MONGODB['COLLECTION']]
 logs = collection.find({'timestamp': {'$gte': datetime.datetime.now() - datetime.timedelta(hours = 1)}}).sort('timestamp', pymongo.ASCENDING)
-print("Found %d new log entries." %(logs.count()))
+logging.info("Found %d new log entries." %(logs.count()))
 for line in logs:
     line.update(ELK['TAG'])
     requests.put(ELK['URL'], headers = {'Content-type': 'application/json'}, auth = (ELK['USER'], ELK['PASSWD']), data = line)
 
-print("Completed updating %d new log entries." %(logs.count()))
+logging.info("Completed updating %d new log entries." %(logs.count()))
